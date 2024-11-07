@@ -5,7 +5,7 @@ FROM node:lts
 RUN npm install -g pnpm
 
 # 使用 pnpm 安装项目依赖
-RUN pnpm install --prod
+RUN pnpm install
 
 # 编译 TypeScript 为 JavaScript
 RUN pnpm run build
