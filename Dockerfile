@@ -14,7 +14,7 @@ RUN pnpm run build
 WORKDIR /app
 
 # 复制 dist 文件夹到容器中
-COPY dist ./dist
+COPY dist .
 
 
 # 暴露应用程序端口
