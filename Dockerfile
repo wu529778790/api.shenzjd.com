@@ -14,11 +14,11 @@ RUN pnpm run build
 WORKDIR /app
 
 # 复制 dist 文件夹到容器中
-COPY dist .
+COPY dist/ /
 
 
 # 暴露应用程序端口
 EXPOSE 3000
 
 # 启动应用
-CMD ["node", "dist/main.js"]
+CMD ["node", "/main.js"]
