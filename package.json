@@ -1,7 +1,7 @@
 {
   "name": "api.shenzjd.com",
   "private": true,
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "神族九帝 WebHooks API",
   "license": "MIT",
   "scripts": {
