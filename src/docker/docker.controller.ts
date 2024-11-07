@@ -2,6 +2,7 @@ import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common'
 import { exec } from 'child_process'
 import * as fs from 'fs'
 import * as path from 'path'
+import { promisify } from 'util'
 
 @Controller('docker')
 export class DockerController {
@@ -18,35 +19,35 @@ export class DockerController {
       return 'dockerComposeYml parameter is required'
     }
 
-    await this.updateDocker(dockerName, dockerComposeYml)
-
-    return `Docker '${dockerName}' received and processed`
+    try {
+      const result = await this.updateDocker(dockerName, dockerComposeYml)
+      return `Docker '${dockerName}' received and processed: ${result}`
+    } catch (error) {
+      return `Error processing Docker '${dockerName}': ${error.message}`
+    }
   }
 
-  private async updateDocker(dockerName: string, dockerComposeYml: string) {
+  private async updateDocker(dockerName: string, dockerComposeYml: string): Promise<string> {
     const targetDir = `/opt/1panel/apps/openresty/openresty/www/sites/${dockerName}`
+    const execPromise = promisify(exec)
 
     try {
+      // Change to the target directory
       process.chdir(targetDir)
 
+      // Write the docker-compose.yml content to a file
       fs.writeFileSync(path.join(targetDir, 'docker-compose.yml'), dockerComposeYml)
 
-      exec(
-        `docker pull ${dockerName} && docker-compose -f docker-compose.yml up -d`,
-        (error: any, stdout: any, stderr: any) => {
-          if (error) {
-            console.error(`Error updating Docker: ${error.message}`)
-            return
-          }
-          if (stderr) {
-            console.error(`stderr: ${stderr}`)
-            return
-          }
-          console.log(`stdout: ${stdout}`)
-        }
-      )
+      // Execute Docker commands and return the result or errors
+      const { stdout, stderr } = await execPromise(`docker pull ${dockerName} && docker-compose up -d`)
+
+      if (stderr) {
+        throw new Error(stderr)
+      }
+
+      return stdout
     } catch (err) {
-      console.error(`Failed to change directory or write file: ${err.message}`)
+      throw new Error(`Failed to update Docker: ${err.message}`)
     }
   }
 }
