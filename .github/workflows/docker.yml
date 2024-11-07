@@ -18,6 +18,15 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install Pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build project
+        run: pnpm run build
+
       - name: Update version and commit
         run: |
           git config user.name 'github-actions[bot]'
