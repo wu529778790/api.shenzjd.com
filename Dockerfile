@@ -12,4 +12,4 @@ COPY dist/ ./
 EXPOSE 3000
 
 # 启动应用
-CMD ["node", "/main.js"]
+CMD ["node", "main.js"]
