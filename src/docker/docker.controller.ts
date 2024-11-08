@@ -28,6 +28,8 @@ export class DockerController {
   }
 
   private async updateDocker(dockerName: string, dockerComposeYml: string): Promise<string> {
+    console.log('dockerName', dockerName, 'dockerComposeYml', dockerComposeYml)
+
     const targetDir = `/opt/1panel/apps/openresty/openresty/www/sites/${dockerName.split('/')[1]}`
     const execPromise = promisify(exec)
 
